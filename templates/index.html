@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Tipiṭaka Search{% endblock %}
+
+{% block content %}
+  <form method="get" action="{{ url_for('search') }}">
+    <input type="text" name="q" placeholder='e.g. rupa* anatta*  "evaṃ me sutaṃ"' value="{{ q|e }}">
+    <select name="basket">
+      <option value="">(any basket)</option>
+      {% for b in ["sutta","vinaya","abhidhamma","extracanonical"] %}
+        <option value="{{ b }}" {% if basket==b %}selected{% endif %}>{{ b }}</option>
+      {% endfor %}
+    </select>
+    <select name="collection">
+      <option value="">(any collection)</option>
+      {% for c in ["DN","MN","SN","AN","KN"] %}
+        <option value="{{ c }}" {% if collection==c %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
+    <select name="layer">
+      <option value="">(any layer)</option>
+      {% for l in ["mula","atthakatha","tika","unknown"] %}
+        <option value="{{ l }}" {% if layer==l %}selected{% endif %}>{{ l }}</option>
+      {% endfor %}
+    </select>
+    <select name="size">
+      {% for n in [10,20,50] %}
+        <option value="{{ n }}" {% if size==n %}selected{% endif %}>{{ n }} results</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Search</button>
+  </form>
+
+  {% if q %}
+    <div class="pill">query mode: <strong>simple_query_string</strong></div>
+    <div class="pill">operators: AND OR NOT " * ? ( )</div>
+  {% endif %}
+
+  {% if q and total is not none %}
+    <p><strong>{{ total }}</strong> results for <em>{{ q|e }}</em></p>
+  {% endif %}
+
+  {% for h in hits %}
+    <div class="hit">
+      <div class="meta">
+        <strong>{{ h._source.title or h._source.subhead or "(untitled)" }}</strong>
+        — {{ h._source.basket or "?" }}{% if h._source.collection %}/{{ h._source.collection }}{% endif %}
+        — layer: {{ h._source.text_layer or "?" }}
+      </div>
+
+      <div class="snippet">
+        {% if h.highlight %}
+          {% for fld, frags in h.highlight.items() %}
+            {% for f in frags %}
+              <div>{{ f|safe }}</div>
+            {% endfor %}
+          {% endfor %}
+        {% else %}
+          <div>
+            {{ (h._source.text or "")[:300] }}
+            {% if (h._source.text or "")|length > 300 %}…{% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if h._source.hierarchy %}
+        <div class="src">
+          path:
+          {% for node in h._source.hierarchy %}
+            <code>{{ node.type or "div" }}: {{ node.head or node.id }}</code>{% if not loop.last %} › {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="src">
+        <code>{{ h._source.source_file }}</code> — div: <code>{{ h._source.div_id }}</code> — seg: <code>{{ h._source.segment_id }}</code>
+      </div>
+    </div>
+  {% endfor %}
+
+  {% if q and total and total > size %}
+    <div class="pager">
+      {% if page > 1 %}
+        <a href="{{ url_for('search', q=q, basket=basket, collection=collection, layer=layer, size=size, page=page-1) }}">« Prev</a>
+      {% endif %}
+      <span> Page {{ page }} </span>
+      {% if page*size < total %}
+        <a href="{{ url_for('search', q=q, basket=basket, collection=collection, layer=layer, size=size, page=page+1) }}">Next »</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}
