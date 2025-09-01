@@ -198,3 +198,66 @@ curl -u elastic:changeme -X PUT "http://localhost:9200/tipitaka_segments" \
 
 curl -u elastic:changeme -XDELETE http://localhost:9200/tipitaka_segments
 
+
+curl -u elastic:changeme -XPUT "http://localhost:9200/tipitaka_segments" \
+ -H 'Content-Type: application/json' -d '{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "pali_text": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding", "pali_syns"]
+        }
+      },
+      "filter": {
+        "pali_syns": {
+          "type": "synonym", "lenient": true,
+          "synonyms": ["attha,atthakatha","mula,mulika","tika,ṭīkā","samyutta,saṃyutta,saṁyutta","anguttara,aṅguttara"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "text_layer":   { "type": "keyword" },
+      "basket":       { "type": "keyword" },
+      "collection_hint": { "type": "keyword" },
+      "work_hint":    { "type": "keyword" },
+      "nikaya_banner_text": { "type": "text", "analyzer": "pali_text" },
+
+      "book":   { "type": "text", "analyzer": "pali_text" },
+      "chapter":{ "type": "text", "analyzer": "pali_text" },
+      "title":  { "type": "text", "analyzer": "pali_text" },
+      "subhead":{ "type": "text", "analyzer": "pali_text" },
+
+      "hierarchy": {
+        "type": "nested",
+        "properties": {
+          "type": { "type": "keyword" },
+          "id":   { "type": "keyword" },
+          "head": { "type": "text", "analyzer": "pali_text" }
+        }
+      },
+      "edition_pages": {
+        "type": "nested",
+        "properties": { "ed": { "type": "keyword" }, "n": { "type": "keyword" } }
+      },
+
+      "div_id":       { "type": "keyword" },
+      "segment_id":   { "type": "keyword" },
+      "order":        { "type": "integer" },
+      "para_no":      { "type": "keyword" },
+      "rend":         { "type": "keyword" },
+      "lang":         { "type": "keyword" },
+
+      "text":         { "type": "text", "analyzer": "pali_text" },
+      "html":         { "type": "text", "index": false },
+
+      "source_file":  { "type": "keyword" },
+      "source_path":  { "type": "keyword", "index": false }
+    }
+  }
+}'
+
+
