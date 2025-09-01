@@ -1,4 +1,4 @@
-#!/bin/bash
+
 
 # 1) attachment pipeline (requires ingest-attachment plugin)
 curl -u elastic:changeme -X PUT 'http://localhost:9200/_ingest/pipeline/xml_attach' \
@@ -25,6 +25,9 @@ curl -u elastic:changeme -X PUT 'http://localhost:9200/pali-xml' \
     }}
   }}
 }'
+
+curl -u elastic:changeme -s http://localhost:9200/tipitaka_segments/_mapping | jq
+curl -u elastic:changeme -s http://localhost:9200/tipitaka_segments/_settings | jq
 
 
 curl -u elastic:changeme 'http://localhost:9200/pali-xml/_search' \
@@ -83,6 +86,73 @@ curl -u elastic:changeme -s http://localhost:9200/canon_segments/_search -H 'Con
   "aggs": { "by_basket": { "terms": { "field": "basket", "size": 10 } } }
 }' | jq '.aggregations.by_basket.buckets'
 
+curl -u elastic:changeme -XPUT "http://localhost:9200/tipitaka_segments" \
+  -H 'Content-Type: application/json' -d '{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "pali_text": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding", "pali_syns"]
+        }
+      },
+      "filter": {
+        "pali_syns": {
+          "type": "synonym",
+          "lenient": true,
+          "synonyms": [
+            "attha,atthakatha",
+            "mula,mulika",
+            "tika,ṭīkā",
+            "samyutta,saṃyutta,saṁyutta",
+            "anguttara,aṅguttara"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "basket":           { "type": "keyword" },
+      "collection":       { "type": "keyword" },
+      "text_layer":       { "type": "keyword" },
+      "book":             { "type": "text", "analyzer": "pali_text" },
+      "chapter":          { "type": "text", "analyzer": "pali_text" },
+      "title":            { "type": "text", "analyzer": "pali_text" },
+      "subhead":          { "type": "text", "analyzer": "pali_text" },
+      "hierarchy": {
+        "type": "nested",
+        "properties": {
+          "type": { "type": "keyword" },
+          "id":   { "type": "keyword" },
+          "head": { "type": "text", "analyzer": "pali_text" }
+        }
+      },
+      "canonical_scheme": { "type": "keyword" },
+      "canonical_ref":    { "type": "keyword" },
+      "work_id":          { "type": "keyword" },
+      "div_id":           { "type": "keyword" },
+      "segment_id":       { "type": "keyword" },
+      "order":            { "type": "integer" },
+      "para_no":          { "type": "keyword" },
+      "rend":             { "type": "keyword" },
+      "edition_pages": {
+        "type": "nested",
+        "properties": {
+          "ed": { "type": "keyword" },
+          "n":  { "type": "keyword" }
+        }
+      },
+      "lang":             { "type": "keyword" },
+      "text":             { "type": "text", "analyzer": "pali_text" },
+      "html":             { "type": "text", "index": false },
+      "source_file":      { "type": "keyword" },
+      "source_path":      { "type": "keyword", "index": false }
+    }
+  }
+}'
+
 
 curl -u elastic:changeme -X PUT "http://localhost:9200/tipitaka_segments" \
   -H 'Content-Type: application/json' \
@@ -125,3 +195,6 @@ curl -u elastic:changeme -X PUT "http://localhost:9200/tipitaka_segments" \
       }
     }
   }'
+
+curl -u elastic:changeme -XDELETE http://localhost:9200/tipitaka_segments
+
