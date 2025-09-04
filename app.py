@@ -11,7 +11,43 @@ es = Elasticsearch(ES_URL, basic_auth=(ES_USER, ES_PASS), request_timeout=15)
 
 app = Flask(__name__)
 
+@app.route("/bilara")
+def bilara():
+    pass
+    # q = request.args.get("q","").strip()
+    # scheme =request.args.get("scheme") or None
+    # translator = request.args.get("translator") or None
+    # work_id = request.args.get("work_id") or None
+    # work_number = request.args.get("work_number") or None
+    # size = int(request.args.get("size", 20))
+    # page = max(1, int(request.args.get("page", 1)))
+    # from_ = (page - 1) * size
+    #
+    # hits, total = [], None
+    # if q:
+    #     filters = []
+    #     if scheme:     filters.append({"term": {"scheme": scheme}})
+    #     if translator: filters.append({"term": {"translator": translator}})
+    #     if work_id:    filters.append({"term": {"work_id": work_id}})
+    #     if work_number:filters.append({"term": {"work_number": work_number}})
+    #
+    #     body = {
+    #         "from": from_, "size": size,
+    #         "query": {"bool":{
+    #             "filter": filters,
+    #             "must": [{"simple_query_string":{
+    #                 "query": q, "default_operator":"and",
+    #                 "fields": ["text^3","title^3","subhead^2","book^1.5","chapter^1.5"]
+    #             }}],
+    #
+    #
+    #         }}
+    #
+    #     }
+    #
+
 @app.route("/")
+@app.route("/tipitaka")
 def search():
     q = request.args.get("q","").strip()
     basket = request.args.get("basket") or None

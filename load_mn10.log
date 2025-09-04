@@ -1,0 +1,2 @@
+/home/andrew/projects/tipitaka_org/bilara_loader_dropin.py:295: DeprecationWarning: Passing transport options in the API method is deprecated. Use 'Elasticsearch.options()' instead.
+  ok, errors = helpers.bulk(es, actions, chunk_size=1000, request_timeout=120, raise_on_error=False, stats_only=False)

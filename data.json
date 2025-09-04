@@ -1,0 +1,257 @@
+curl -s -u elastic:changeme "http://localhost:9200/bilara_segments/_search" \
+ -H 'Content-Type: application/json' -d '{
+  "size":0, "aggs":{"suttas":{"terms":{"field":"sutta","size":50}}}
+}'
+
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "suttas": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 159159,
+      "buckets": [
+        {
+          "key": "ja547",
+          "doc_count": 3382
+        },
+        {
+          "key": "dn16",
+          "doc_count": 1664
+        },
+        {
+          "key": "ja546",
+          "doc_count": 1282
+        },
+        {
+          "key": "dn33",
+          "doc_count": 1167
+        },
+        {
+          "key": "dn34",
+          "doc_count": 894
+        },
+        {
+          "key": "dn14",
+          "doc_count": 851
+        },
+        {
+          "key": "ja542",
+          "doc_count": 825
+        },
+        {
+          "key": "ja543",
+          "doc_count": 815
+        },
+        {
+          "key": "ja545",
+          "doc_count": 801
+        },
+        {
+          "key": "bv2",
+          "doc_count": 775
+        },
+        {
+          "key": "ja541",
+          "doc_count": 773
+        },
+        {
+          "key": "ja539",
+          "doc_count": 763
+        },
+        {
+          "key": "dn30",
+          "doc_count": 721
+        },
+        {
+          "key": "dn23",
+          "doc_count": 715
+        },
+        {
+          "key": "ja544",
+          "doc_count": 700
+        },
+        {
+          "key": "dn1",
+          "doc_count": 662
+        },
+        {
+          "key": "dn2",
+          "doc_count": 650
+        },
+        {
+          "key": "dn24",
+          "doc_count": 581
+        },
+        {
+          "key": "dn32",
+          "doc_count": 574
+        },
+        {
+          "key": "dn19",
+          "doc_count": 559
+        },
+        {
+          "key": "mn85",
+          "doc_count": 545
+        },
+        {
+          "key": "dn21",
+          "doc_count": 515
+        },
+        {
+          "key": "ja537",
+          "doc_count": 514
+        },
+        {
+          "key": "ja540",
+          "doc_count": 511
+        },
+        {
+          "key": "ja538",
+          "doc_count": 499
+        },
+        {
+          "key": "dn9",
+          "doc_count": 474
+        },
+        {
+          "key": "dn29",
+          "doc_count": 465
+        },
+        {
+          "key": "dn22",
+          "doc_count": 454
+        },
+        {
+          "key": "ja536",
+          "doc_count": 446
+        },
+        {
+          "key": "mn38",
+          "doc_count": 445
+        },
+        {
+          "key": "dn17",
+          "doc_count": 444
+        },
+        {
+          "key": "dn3",
+          "doc_count": 437
+        },
+        {
+          "key": "mn82",
+          "doc_count": 434
+        },
+        {
+          "key": "ja534",
+          "doc_count": 433
+        },
+        {
+          "key": "ja535",
+          "doc_count": 406
+        },
+        {
+          "key": "ja532",
+          "doc_count": 399
+        },
+        {
+          "key": "mn77",
+          "doc_count": 390
+        },
+        {
+          "key": "dn25",
+          "doc_count": 383
+        },
+        {
+          "key": "mn56",
+          "doc_count": 382
+        },
+        {
+          "key": "vv33",
+          "doc_count": 382
+        },
+        {
+          "key": "ja531",
+          "doc_count": 377
+        },
+        {
+          "key": "dn5",
+          "doc_count": 374
+        },
+        {
+          "key": "mn26",
+          "doc_count": 365
+        },
+        {
+          "key": "mn101",
+          "doc_count": 362
+        },
+        {
+          "key": "pv36",
+          "doc_count": 362
+        },
+        {
+          "key": "ja533",
+          "doc_count": 359
+        },
+        {
+          "key": "mn22",
+          "doc_count": 359
+        },
+        {
+          "key": "dn26",
+          "doc_count": 355
+        },
+        {
+          "key": "mn36",
+          "doc_count": 354
+        },
+        {
+          "key": "mn12",
+          "doc_count": 349
+        }
+      ]
+    }
+  }
+}
+
+
+curl -s -u elastic:changeme "http://localhost:9200/bilara_segments/_search" \
+ -H 'Content-Type: application/json' -d '{
+  "size":10, "_source":false, "fields":["segment_id","sutta"],
+  "query":{"wildcard":{"segment_id.keyword":"mn10*"}}
+}'
+
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 0,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": []
+  }
+}

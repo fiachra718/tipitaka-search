@@ -1,0 +1,54 @@
+SHELL$ curl -s -u elastic:changeme "http://localhost:9200/bilara_segments/_search"  -H 'Content-Type: application/json' -d '{
+  "size": 5,
+  "query": { "term": { "sutta": "mn10" } },
+  "sort": [{ "seq": "asc" }],
+  "_source": ["segment_id","segment_num","seq","variants.lang"],
+  "post_filter": {
+    "bool": {
+      "filter": [
+        { "nested": {
+            "path": "variants",
+            "query": { "term": { "variants.lang": "pli" } },
+            "inner_hits": { "name":"pli", "size": 1, "_source": ["variants.text"] }
+        }},
+        { "nested": {
+            "path": "variants",
+            "query": { "bool": { "filter": [
+              { "term": { "variants.lang": "en" } },
+              { "term": { "variants.translator": "sujato" } }
+            ] } },
+            "inner_hits": { "name":"en", "size": 1, "_source": ["variants.text","variants.translator"] }
+        }}
+      ]
+    }
+  }
+}' | jq > missing.json
+SHELL$ {
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 0,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": []
+  }
+}
+
+SHELL$ curl -s -u elastic:changeme "http://localhost:9200/bilara_segments/_search"  -H 'Content-Type: application/json' -d '{
+  "size": 5,
+  "query": { "term": { "sutta": "mn10" } },
+  "sort": [{ "seq": "asc" }],
+  "_source": ["segment_id","segment_num","seq"],
+  "inner_hits": {},
+  "from": 0
+}' | jq '.hits.hits | length' >> missing.json 
+
+SHELL$ 0

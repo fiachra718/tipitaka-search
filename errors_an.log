@@ -1,0 +1,27 @@
+python3: can't open file '/mnt/data/bilara_loader_dropin.py': [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "/home/andrew/projects/tipitaka_org/bilara_loader_dropin.py", line 296, in <module>
+    if isinstance(errors, list) and errors:
+                  ^^^^^^
+NameError: name 'errors' is not defined
+No files matched.
+/home/andrew/projects/tipitaka_org/bilara_loader_dropin.py:295: DeprecationWarning: Passing transport options in the API method is deprecated. Use 'Elasticsearch.options()' instead.
+  ok, errors = helpers.bulk(es, actions, chunk_size=1000, request_timeout=120, raise_on_error=False, stats_only=False)
+/home/andrew/projects/tipitaka_org/bilara_loader_dropin.py:295: DeprecationWarning: Passing transport options in the API method is deprecated. Use 'Elasticsearch.options()' instead.
+  ok, errors = helpers.bulk(es, actions, chunk_size=1000, request_timeout=120, raise_on_error=False, stats_only=False)
+/home/andrew/projects/tipitaka_org/bilara_loader_dropin.py:295: DeprecationWarning: Passing transport options in the API method is deprecated. Use 'Elasticsearch.options()' instead.
+  ok, errors = helpers.bulk(es, actions, chunk_size=1000, request_timeout=120, raise_on_error=False, stats_only=False)
+/home/andrew/projects/tipitaka_org/bilara_loader_dropin.py:295: DeprecationWarning: Passing transport options in the API method is deprecated. Use 'Elasticsearch.options()' instead.
+  ok, errors = helpers.bulk(es, actions, chunk_size=1000, request_timeout=120, raise_on_error=False, stats_only=False)
+/home/andrew/projects/tipitaka_org/bilara_loader_dropin.py:295: DeprecationWarning: Passing transport options in the API method is deprecated. Use 'Elasticsearch.options()' instead.
+  ok, errors = helpers.bulk(es, actions, chunk_size=1000, request_timeout=120, raise_on_error=False, stats_only=False)
+No files matched.
+
+
+
+
+Indexed 16367 segments into bilara_segments
+Indexed 40814 segments into bilara_segments
+Indexed 144394 segments into bilara_segments
+Indexed 26479 segments into bilara_segments
+Indexed 41819 segments into bilara_segments
